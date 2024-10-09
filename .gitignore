@@ -1,0 +1,36 @@
+# Python Bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# virtualenv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+ENV.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Log files
+*.log
+
+# Environment variables
+.env
+*.env
+
+# Google Cloud credentials
+*.json
+
+# FastAPI
+static/
+media/
+uploads/

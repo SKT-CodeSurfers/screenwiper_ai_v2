@@ -1,0 +1,6 @@
+Pillow
+google-cloud-vision
+fastapi
+uvicorn
+pydantic
+requests
