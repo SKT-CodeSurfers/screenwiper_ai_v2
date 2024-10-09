@@ -39,7 +39,15 @@ server will run at http://localhost:8000
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images" -H "Content-Type: application/json" -d "{\"imageUrls\": [\"https://example.com/image1.jpg\", \"https://example.com/image2.jpg\"]}"
+curl -X POST "http://localhost:8000/analyze_images" \
+-H "Content-Type: application/json" \
+-d '{
+  "imageUrls": [
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg"
+  ]
+}'
+
 ```
 
 2. Image Analysis via Local File Upload
@@ -47,7 +55,11 @@ curl -X POST "http://localhost:8000/analyze_images" -H "Content-Type: applicatio
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images_local" -H "Content-Type: multipart/form-data" -F "files=@C:\screenWiperV2\test\test4.png"
+curl -X POST "http://localhost:8000/analyze_images_local" \
+-H "Content-Type: multipart/form-data" \
+-F "files=@C:\screenWiperV2\test\test1.png" \
+-F "files=@C:\screenWiperV2\test\test2.png"
+
 ```
 
 ## Response Format
