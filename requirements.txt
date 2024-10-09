@@ -1,5 +1,6 @@
 Pillow
 google-cloud-vision
+google-cloud-language
 fastapi
 uvicorn
 pydantic

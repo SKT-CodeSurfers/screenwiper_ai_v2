@@ -1,12 +1,15 @@
 # screenwiper_ai_v2
 
-FastAPI를 사용하여 구현된 OCR(Optical Character Recognition) API입니다. Google Cloud Vision API를 활용하여 이미지에서 텍스트를 추출합니다.
+FastAPI를 사용하여 구현된 OCR(광학 문자 인식) 및 NLP(자연어 처리) API입니다. Google Cloud Vision API를 사용하여 이미지에서 텍스트를 추출하고, Google Cloud Natural Language API를 사용하여 텍스트 분석 및 분류를 수행합니다.
 
 ## Features
 
--   Image analysis via URL (/analyze_images)
--   Image analysis via local file upload (/analyze_images_local) (Local Test 용도)
--
+-   Image analysis via URL (`/analyze_images`)
+-   Image analysis via local file upload (`/analyze_images_local`) (**For local testing**)
+-   Text categorization into three categories (`def analyze_entities`):
+    1. Place information (restaurants, stores, etc.)
+    2. Schedule information
+    3. Other miscellaneous information
 
 ## Installation
 
@@ -16,7 +19,7 @@ FastAPI를 사용하여 구현된 OCR(Optical Character Recognition) API입니�
 pip install -r requirements.txt
 ```
 
-2. Google Cloud
+2. Set up Google Cloud
 
 -   Google Cloud 프로젝트를 생성하고 Vision API를 활성화
 -   서비스 계정 키를 생성하고 `json/screenwiper-919c75b2918f.json` 경로에 저장
@@ -44,22 +47,45 @@ curl -X POST "http://localhost:8000/analyze_images" -H "Content-Type: applicatio
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images_local" -H "Content-Type: multipart/form-data" -F "files=@C:\screenWiperV2\test\test1.png" -F "files=@C:\screenWiperV2\test\test2.png"
+curl -X POST "http://localhost:8000/analyze_images_local" -H "Content-Type: multipart/form-data" -F "files=@C:\screenWiperV2\test\test4.png"
 ```
 
-## Response Format (수정예정)
+## Response Format
+
+### Category 1: Place Information
 
 ```
 {
-  "data": [
+  "categoryId": 1,
+  "title": "Store Name",
+  "address": "Store Address",
+  "operatingHours": "Operating Hours",
+  "summary": "Brief summary of the place"
+}
+```
+
+### Category 2: Schedule Information
+
+```
+{
+  "categoryId": 2,
+  "title": "Schedule Information",
+  "list": [
     {
-      "imageUrl": "https://example.com/image1.jpg",
-      "extractedText": "Extracted text content"
+      "name": "Event Name",
+      "date": "Event Date"
     },
-    {
-      "imageUrl": "https://example.com/image2.jpg",
-      "extractedText": "Extracted text content"
-    }
+    // ... more events
   ]
+}
+```
+
+### Category 3: Other Information
+
+```
+{
+  "categoryId": 3,
+  "title": "Other Information",
+  "summary": "Summary of the extracted text"
 }
 ```
