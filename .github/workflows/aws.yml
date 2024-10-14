@@ -36,13 +36,13 @@ jobs:
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
           # Navigate to the project directory
-          cd /path/to/your/project &&
+          cd /home/ubuntu/screenwiper &&
           # Pull the latest changes
           git pull origin main &&
           # Install dependencies (if needed)
           npm install &&
           # Restart your application (adjust this based on your setup)
-          pm2 restart your-app-name
+          pm2 restart screenwiper --port 3000 || pm2 start npm --name "screenwiper" -- start -- --port 3000
         '
 
     - name: Clean up
