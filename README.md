@@ -59,7 +59,6 @@ curl -X POST "http://localhost:8000/analyze_images_local" \
 -H "Content-Type: multipart/form-data" \
 -F "files=@C:\screenWiperV2\test\test1.png" \
 -F "files=@C:\screenWiperV2\test\test2.png"
-
 ```
 
 ## Response Format

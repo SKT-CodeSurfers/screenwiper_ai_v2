@@ -5,3 +5,5 @@ fastapi
 uvicorn
 pydantic
 requests
+python-dateutil
+python-multipart
