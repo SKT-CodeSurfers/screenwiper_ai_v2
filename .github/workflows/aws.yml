@@ -45,10 +45,9 @@ jobs:
           pid=$(pgrep -f "uvicorn main:app") || true
           if [ -n "$pid" ]; then
             echo "Stopping process $pid"
-            kill $pid
-            sleep 5
+            kill "$pid" || echo "Failed to stop process $pid"
           else
-            echo "No existing process found"
+            echo "No process found to stop."
           fi
           
           echo "Starting new process"
