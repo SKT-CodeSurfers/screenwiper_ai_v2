@@ -42,7 +42,14 @@ jobs:
           export PYTHONUNBUFFERED=1
           
           echo "Stopping existing process"
-          pkill -f "uvicorn main:app" || echo "No existing process found"
+          pid=$(pgrep -f "uvicorn main:app") || true
+          if [ -n "$pid" ]; then
+            echo "Stopping process $pid"
+            kill $pid
+            sleep 5
+          else
+            echo "No existing process found"
+          fi
           
           echo "Starting new process"
           nohup uvicorn main:app --host=0.0.0.0 --port=3000 > app.log 2>&1 &
@@ -52,10 +59,10 @@ jobs:
           tail -n 50 app.log
           
           echo "Checking process status"
-          ps aux | grep "uvicorn main:app"
+          ps aux | grep "uvicorn main:app" | grep -v grep
           
           echo "Deployment completed"
-        ' || { echo "SSH command failed"; exit 1; }
+        '
     - name: Cleanup
       if: always()
       run: rm -f private_key
