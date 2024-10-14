@@ -11,6 +11,10 @@ FastAPI를 사용하여 구현된 OCR(광학 문자 인식) 및 NLP(자연어 �
     2. Schedule information
     3. Other miscellaneous information
 
+## Deployment
+
+배포 서버 URL: [http://43.200.186.148:3000/](http://43.200.186.148:3000/)
+
 ## Installation
 
 1. Install required packages
