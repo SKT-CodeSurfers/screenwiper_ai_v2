@@ -28,15 +28,15 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
-          set -xe
+          set -x
           echo "Navigating to project directory"
-          cd ~/screenwiper_ai_v2 || (echo "Failed to change directory" && exit 1)
+          cd ~/screenwiper_ai_v2 || { echo "Failed to change directory"; exit 1; }
           
           echo "Pulling latest changes"
-          git pull origin main || (echo "Failed to pull changes" && exit 1)
+          git pull origin main || { echo "Failed to pull changes"; exit 1; }
           
           echo "Installing or updating dependencies"
-          pip install -r requirements.txt || (echo "Failed to install dependencies" && exit 1)
+          pip install -r requirements.txt || { echo "Failed to install dependencies"; exit 1; }
           
           echo "Setting up environment variables"
           export PYTHONUNBUFFERED=1
@@ -55,7 +55,7 @@ jobs:
           ps aux | grep "uvicorn main:app"
           
           echo "Deployment completed"
-        ' || (echo "SSH command failed" && exit 1)
+        ' || { echo "SSH command failed"; exit 1; }
     - name: Cleanup
       if: always()
       run: rm -f private_key
