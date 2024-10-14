@@ -39,17 +39,6 @@ jobs:
           echo "Installing or updating dependencies"
           pip install -r requirements.txt || { echo "Failed to install dependencies"; exit 1; }
           
-          echo "Stopping existing process"
-          pid=$(pgrep -f "uvicorn main:app") || true
-          if [ -n "$pid" ]; then
-            echo "Stopping process $pid"
-            kill -15 $pid || true  # SIGTERM
-            sleep 10
-            kill -9 $pid 2>/dev/null || true  # SIGKILL if still running
-          else
-            echo "No existing process found"
-          fi
-          
           echo "Starting new process"
           nohup uvicorn main:app --host=0.0.0.0 --port=3000 > app.log 2>&1 &
           
