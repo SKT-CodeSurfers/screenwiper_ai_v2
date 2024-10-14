@@ -39,7 +39,7 @@ server will run at http://localhost:8000
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images" \
+curl -X POST "http://43.200.186.148:3000/analyze_images" \
 -H "Content-Type: application/json" \
 -d '{
   "imageUrls": [
@@ -55,9 +55,9 @@ curl -X POST "http://localhost:8000/analyze_images" \
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images_local" \
+curl -X POST "http://43.200.186.148:3000/analyze_images_local" \
 -H "Content-Type: multipart/form-data" \
--F "files=@C:\screenWiperV2\test\test1.png" \
+-F "files=@C:\screenWiperV2\test\test1.jpg" \
 -F "files=@C:\screenWiperV2\test\test2.png"
 ```
 
