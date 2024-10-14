@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  AWS_REGION: ap-northeast-2    # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: ap-northeast-2
 
 permissions:
   contents: read
@@ -36,13 +36,14 @@ jobs:
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
           # Navigate to the project directory
-          cd /home/ubuntu/screenwiper &&
+          cd ~/screenwiper_ai_v2 &&
           # Pull the latest changes
           git pull origin main &&
-          # Install dependencies (if needed)
-          npm install &&
-          # Restart your application (adjust this based on your setup)
-          pm2 restart screenwiper --port 3000 || pm2 start npm --name "screenwiper" -- start -- --port 3000
+          # Install or update dependencies
+          pip install -r requirements.txt &&
+          # Restart the application (adjust based on your setup)
+          pkill -f "python main.py" || true
+          nohup python main.py > nohup.out 2>&1 &
         '
 
     - name: Clean up
