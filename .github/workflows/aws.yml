@@ -28,7 +28,7 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
-          set -x
+          set -e
           echo "Navigating to project directory"
           cd ~/screenwiper_ai_v2 || { echo "Failed to change directory"; exit 1; }
           
@@ -44,10 +44,11 @@ jobs:
           echo "Stopping existing process"
           pid=$(pgrep -f "uvicorn main:app") || true
           if [ -n "$pid" ]; then
-            echo "Stopping process $pid"
-            kill "$pid" || echo "Failed to stop process $pid"
+            echo "Attempting to stop process $pid"
+            kill $pid || echo "Failed to stop process $pid, it may have already terminated"
+            sleep 5  # Wait for the process to stop
           else
-            echo "No process found to stop."
+            echo "No existing process found to stop."
           fi
           
           echo "Starting new process"
