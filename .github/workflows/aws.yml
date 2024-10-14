@@ -39,29 +39,22 @@ jobs:
           echo "Installing or updating dependencies"
           pip install -r requirements.txt || { echo "Failed to install dependencies"; exit 1; }
           
-          echo "Setting up environment variables"
-          export PYTHONUNBUFFERED=1
-          
-          echo "Stopping existing process"
-          pid=$(pgrep -f "uvicorn main:app") || true
-          if [ -n "$pid" ]; then
-            echo "Stopping process $pid"
-            kill -15 $pid || true  # SIGTERM
-            sleep 10
-            kill -9 $pid 2>/dev/null || true  # SIGKILL if still running
-          else
-            echo "No existing process found"
-          fi
-          
-          echo "Starting new process"
+          echo "Restarting the application"
+          pkill -f "uvicorn main:app" || true
           nohup uvicorn main:app --host=0.0.0.0 --port=3000 > app.log 2>&1 &
           
-          echo "Checking logs"
-          sleep 5  # Wait for the application to start
-          tail -n 100 app.log || echo "Failed to read logs"
+          echo "Waiting for application to start"
+          sleep 10
           
           echo "Checking process status"
-          pgrep -f "uvicorn main:app" || echo "Process not found. It may have failed to start."
+          if pgrep -f "uvicorn main:app"; then
+            echo "Application is running"
+            tail -n 50 app.log
+          else
+            echo "Application failed to start"
+            tail -n 100 app.log
+            exit 1
+          fi
           
           echo "Deployment completed"
         '
