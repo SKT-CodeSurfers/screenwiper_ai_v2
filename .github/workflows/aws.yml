@@ -43,18 +43,28 @@ jobs:
           export PYTHONUNBUFFERED=1
           
           echo "Stopping existing process"
-          pkill -f "uvicorn main:app" || echo "No existing process found"
-          sleep 5  # Wait for the process to stop
+          pid=$(pgrep -f "uvicorn main:app") || true
+          if [ -n "$pid" ]; then
+            echo "Stopping process $pid"
+            kill -15 $pid || true  # SIGTERM
+            sleep 10
+            kill -9 $pid 2>/dev/null || true  # SIGKILL if still running
+          else
+            echo "No existing process found"
+          fi
           
           echo "Starting new process"
           nohup uvicorn main:app --host=0.0.0.0 --port=3000 > app.log 2>&1 &
           
           echo "Checking logs"
-          sleep 5  # Wait for the application to start
-          tail -n 50 app.log || echo "Failed to read logs"
+          sleep 15  # Wait longer for the application to start
+          tail -n 100 app.log || echo "Failed to read logs"
           
           echo "Checking process status"
           pgrep -f "uvicorn main:app" || echo "Process not found. It may have failed to start."
+          
+          echo "Checking permissions"
+          ls -l ~/screenwiper_ai_v2
           
           echo "Deployment completed"
         '
