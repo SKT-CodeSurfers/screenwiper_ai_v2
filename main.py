@@ -28,7 +28,7 @@ nlp_client = language_v1.LanguageServiceClient()
 class ImageUrls(BaseModel):
     imageUrls: List[str]
 
-def download_image_from_url(image_url: str) -> Image.Image:
+async def download_image_from_url(image_url: str) -> Image.Image:
     try:
         response = requests.get(image_url)
         response.raise_for_status()

@@ -47,8 +47,8 @@ curl -X POST "http://43.200.186.148:3000/analyze_images" \
 -H "Content-Type: application/json" \
 -d '{
   "imageUrls": [
-    "https://example.com/image1.jpg",
-    "https://example.com/image2.jpg"
+    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/place2.png",
+    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/place5.jpeg"
   ]
 }'
 
