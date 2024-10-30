@@ -10,6 +10,7 @@ from typing import List
 from datetime import datetime
 from google.cloud import language_v1
 import re
+import httpx
 
 # & FastAPI 인스턴스 생성
 app = FastAPI()
@@ -30,13 +31,13 @@ class ImageUrls(BaseModel):
 
 async def download_image_from_url(image_url: str) -> Image.Image:
     try:
-        response = requests.get(image_url)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(image_url)
         response.raise_for_status()
         img = Image.open(io.BytesIO(response.content))
         return img.convert('RGB')
-    except requests.exceptions.RequestException as e:
+    except httpx.RequestError as e:
         raise HTTPException(status_code=400, detail=f"이미지 다운로드 중 오류가 발생했습니다: {e}")
-
 
 # & perfom OCR
 def perform_ocr(image: Image.Image):
@@ -187,20 +188,21 @@ async def analyze_images(image_urls: ImageUrls):
     for image_url in image_urls.imageUrls:
         try:
             image_content  = await download_image_from_url(image_url)
-            extracted_text = perform_ocr(image_content)
 
+            extracted_text = perform_ocr(image_content)
             entities = analyze_entities(extracted_text)
-            addresses, dates, prices, other_entities, store_name = extract_information(entities,extracted_text)
+
+            addresses, other_entities, store_name ,events = extract_information(entities,extracted_text)
 
             # ! 카테고리 설정하기 
             if addresses:
                 category_id = 1
-            elif dates:
+            elif events:
                 category_id = 2
             else:
                 category_id = 3
 
-            response_data = generate_response(category_id, addresses, dates, prices, other_entities, store_name)
+            response_data = generate_response(category_id, addresses, other_entities, store_name, extracted_text,events)
             results.append(response_data)
 
         except Exception as e:

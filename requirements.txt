@@ -7,3 +7,4 @@ pydantic
 requests
 python-dateutil
 python-multipart
+httpx
