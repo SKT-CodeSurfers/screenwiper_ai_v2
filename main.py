@@ -156,30 +156,39 @@ def extract_operating_hours(text):
 
 
 
-def generate_response(category_id, addresses, other_entities, store_name,extracted_text,events):
+def generate_response(category_id, addresses, other_entities, store_name,extracted_text,events,image_url):
+
+    photo_name = image_url.split('/')[-1]
+
+    base_response = {
+        "photoName": photo_name,
+        "photoUrl": image_url
+    }
+
     if category_id == 1:  # ! 장소 정보
-
         operating_hours = extract_operating_hours(extracted_text)
-
-        return {
+        
+        category_response = {
             "categoryId": 1,
-            "title": store_name if store_name else (addresses[0] if addresses else "Unknown Place"), # ! 수정 필요 
+            "title": store_name if store_name else (addresses[0] if addresses else "Unknown Place"),
             "address": addresses[0] if addresses else "",
             "operatingHours": operating_hours,
             "summary": ", ".join(other_entities[:3]),
         }
     elif category_id == 2:  # ! 일정 정보
-        return {
+        category_response = {
             "categoryId": 2,
             "title": other_entities[0] if other_entities else "Unknown Event",
             "list": events,
         }
     else:  # ! 기타
-        return {
+        category_response = {
             "categoryId": 3,
             "title": other_entities[0] if other_entities else "Miscellaneous",
             "summary": ", ".join(other_entities),
         }
+    
+    return {**base_response, **category_response}
 
 
 @app.post("/analyze_images")
@@ -202,7 +211,15 @@ async def analyze_images(image_urls: ImageUrls):
             else:
                 category_id = 3
 
-            response_data = generate_response(category_id, addresses, other_entities, store_name, extracted_text,events)
+            response_data = generate_response(
+                category_id, 
+                addresses, 
+                other_entities, 
+                store_name, 
+                extracted_text,
+                events,
+                image_url  
+            )
             results.append(response_data)
 
         except Exception as e:
