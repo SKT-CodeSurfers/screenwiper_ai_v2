@@ -43,7 +43,7 @@ server will run at http://localhost:8000
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images" \
+curl -X POST "http://43.200.186.148:3000/analyze_images" \
 -H "Content-Type: application/json" \
 -d '{
   "imageUrls": [
@@ -59,25 +59,7 @@ curl -X POST "http://localhost:8000/analyze_images" \
 ```
 curl -X POST "http://localhost:8000/analyze_images_local" \
 -H "Content-Type: multipart/form-data" \
--F "files=@C:\screenWiperV2\test\mma.png"
-```
-
-```
-curl -X POST "http://localhost:8000/analyze_images_local" \
--H "Content-Type: multipart/form-data" \
--F "files=@C:\screenWiperV2\test\car.png"
-```
-
-```
-curl -X POST "http://localhost:8000/analyze_images_local" \
--H "Content-Type: multipart/form-data" \
--F "files=@C:\screenWiperV2\test\t3.png"
-```
-
-```
-curl -X POST "http://localhost:8000/analyze_images_local" \
--H "Content-Type: multipart/form-data" \
--F "files=@C:\screenWiperV2\test\xx.jpg"
+-F "files=@C:\screenWiperV2\test\c.png"
 ```
 
 ## Response Format

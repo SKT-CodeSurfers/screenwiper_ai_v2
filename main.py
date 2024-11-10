@@ -243,7 +243,7 @@ def summarize_text(text, sentences_count=1):
         summary_sentences = summarizer(parser.document, sentences_count)
         summary = ' '.join([str(sentence) for sentence in summary_sentences])
         
-       
+    
         return summary if summary else "텍스트 요약을 생성할 수 없습니다."
     except Exception as e:
         print(f"요약 생성 중 오류 발생: {e}")
@@ -318,7 +318,8 @@ async def analyze_images(image_urls: ImageUrls):
                 store_name, 
                 extracted_text,
                 events,
-                image_url  
+                image_url,
+                None
             )
             results.append(response_data)
 
