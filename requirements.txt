@@ -8,3 +8,6 @@ requests
 python-dateutil
 python-multipart
 httpx
+sumy==0.11.0
+nltk==3.8.
+konlpy

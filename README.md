@@ -43,15 +43,13 @@ server will run at http://localhost:8000
 **Request** :
 
 ```
-curl -X POST "http://43.200.186.148:3000/analyze_images" \
+curl -X POST "http://localhost:8000/analyze_images" \
 -H "Content-Type: application/json" \
 -d '{
   "imageUrls": [
-    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/place2.png",
-    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/place5.jpeg"
+    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/place2.png"
   ]
 }'
-
 ```
 
 2. Image Analysis via Local File Upload
@@ -59,10 +57,27 @@ curl -X POST "http://43.200.186.148:3000/analyze_images" \
 **Request** :
 
 ```
-curl -X POST "http://43.200.186.148:3000/analyze_images_local" \
+curl -X POST "http://localhost:8000/analyze_images_local" \
 -H "Content-Type: multipart/form-data" \
--F "files=@C:\screenWiperV2\test\test1.jpg" \
--F "files=@C:\screenWiperV2\test\test2.png"
+-F "files=@C:\screenWiperV2\test\mma.png"
+```
+
+```
+curl -X POST "http://localhost:8000/analyze_images_local" \
+-H "Content-Type: multipart/form-data" \
+-F "files=@C:\screenWiperV2\test\car.png"
+```
+
+```
+curl -X POST "http://localhost:8000/analyze_images_local" \
+-H "Content-Type: multipart/form-data" \
+-F "files=@C:\screenWiperV2\test\t3.png"
+```
+
+```
+curl -X POST "http://localhost:8000/analyze_images_local" \
+-H "Content-Type: multipart/form-data" \
+-F "files=@C:\screenWiperV2\test\xx.jpg"
 ```
 
 ## Response Format
