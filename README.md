@@ -47,7 +47,7 @@ curl -X POST "http://43.200.186.148:3000/analyze_images" \
 -H "Content-Type: application/json" \
 -d '{
   "imageUrls": [
-    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/place2.png"
+    "https://screen-s3-bucket.s3.ap-northeast-2.amazonaws.com/16C080AA-5121-491F-850A-1B2F3700E881.png"
   ]
 }'
 ```
@@ -57,7 +57,7 @@ curl -X POST "http://43.200.186.148:3000/analyze_images" \
 **Request** :
 
 ```
-curl -X POST "http://localhost:8000/analyze_images_local" \
+curl -X POST "http://43.200.186.148:3000/analyze_images_local" \
 -H "Content-Type: multipart/form-data" \
 -F "files=@C:\screenWiperV2\test\c.png"
 ```
