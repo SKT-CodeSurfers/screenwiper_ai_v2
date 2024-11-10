@@ -223,35 +223,57 @@ def extract_operating_hours(text):
 
 
 #& 카테고리3 (요약)
-import nltk
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer
-from sumy.nlp.stemmers import Stemmer
-from sumy.utils import get_stop_words
+def clean_text(text: str) -> str:
+   
+    text = re.sub(r'\b\d+\b', '', text)  
+    text = re.sub(r'[^가-힣a-zA-Z\s,.!?]', ' ', text)  # 한글, 영문, 기본 문장부호만 남김
+    text = re.sub(r'\s+', ' ', text)  # 연속된 공백을 하나로
+    
+    # 불필요한 키워드 또는 문구 제거
+    keywords_to_remove = ['trip', 'Fashion', 'Q', '게시물', 'Korea', 'Fashion Q', 'tripgoing','TRIPGOING']
+    for keyword in keywords_to_remove:
+        text = re.sub(r'\b' + re.escape(keyword) + r'\b', '', text)  # 키워드만 제거
+        text = re.sub(r'\s+', ' ', text)  # 공백을 하나로 정리
+    
+    return text.strip()
 
-def summarize_text(text, sentences_count=1):
+
+def summarize_text(text, entities):
     try:
+        # 텍스트 정제
+        text = clean_text(text)
         
-        parser = PlaintextParser.from_string(text, Tokenizer('korean'))
-        
-  
-        stemmer = Stemmer('korean')
-        summarizer = LsaSummarizer(stemmer)
-        summarizer.stop_words = get_stop_words('korean')
-        
-        summary_sentences = summarizer(parser.document, sentences_count)
-        summary = ' '.join([str(sentence) for sentence in summary_sentences])
+        # 문장 분리
+        sentences = re.split('[.!?]+', text)
+        sentences = [s.strip() for s in sentences if s.strip()]
         
     
-        return summary if summary else "텍스트 요약을 생성할 수 없습니다."
+        sentences = [s for s in sentences if 10 <= len(s) <= 100]
+        
+        if not sentences:
+            return "텍스트 요약을 생성할 수 없습니다."
+            
+    
+        most_important_entity = max(entities, key=lambda x: x.salience)
+        
+        sentence_scores = []
+        for sentence in sentences:
+            if most_important_entity.name in sentence:
+                length_penalty = 1.0 if len(sentence) <= 50 else (50 / len(sentence))
+                score = most_important_entity.salience * length_penalty
+                sentence_scores.append((score, sentence))
+                
+        if sentence_scores:
+            return max(sentence_scores, key=lambda x: x[0])[1]
+            
+        return sentences[0]
+        
     except Exception as e:
         print(f"요약 생성 중 오류 발생: {e}")
         return "텍스트 요약을 생성할 수 없습니다."
 
 
-
-def generate_response(category_id, addresses, other_entities, store_name,extracted_text,events,image_url,file_name):
+def generate_response(category_id, addresses, other_entities, store_name, extracted_text, events, image_url, file_name, entities):
 
     photo_name = image_url.split('/')[-1] if image_url else file_name
 
@@ -278,8 +300,8 @@ def generate_response(category_id, addresses, other_entities, store_name,extract
         }
     else:  # ! 기타
 
-        summary = summarize_text(extracted_text)
-
+        summary = summarize_text(extracted_text, entities)  # entities 전달
+    
         title = other_entities[0] if other_entities else "기타 정보"
 
         category_response = {
@@ -319,7 +341,8 @@ async def analyze_images(image_urls: ImageUrls):
                 extracted_text,
                 events,
                 image_url,
-                None
+                None,
+                entities
             )
             results.append(response_data)
 
@@ -359,7 +382,7 @@ async def analyze_images(files: List[UploadFile] = File(...)):
             else:
                 category_id = 3
 
-            response_data = generate_response(category_id, addresses, other_entities, store_name, extracted_text,events,None,file.filename)
+            response_data = generate_response(category_id, addresses, other_entities, store_name, extracted_text,events,None,file.filename,entities)
             results.append(response_data)
         
         except Exception as e:

@@ -57,7 +57,7 @@ curl -X POST "http://43.200.186.148:3000/analyze_images" \
 **Request** :
 
 ```
-curl -X POST "http://43.200.186.148:3000/analyze_images_local" \
+curl -X POST "http://localhost:8000/analyze_images_local" \
 -H "Content-Type: multipart/form-data" \
 -F "files=@C:\screenWiperV2\test\c.png"
 ```
